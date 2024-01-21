@@ -10,12 +10,15 @@ split.h.  **Do NOT add main() to this file**.  When you submit
 the function below should be the only one in this file.
 */
 
+#include <iostream>
 #include "split.h"
 
 /* Add a prototype for a helper function here if you need */
 
 void insert(Node *&head, int value);
 void splitHelper(Node *in, Node*& odds, Node*& evens);
+void deleteLists(Node*& in);
+
 
 void split(Node*& in, Node*& odds, Node*& evens)
 {
@@ -27,11 +30,7 @@ void split(Node*& in, Node*& odds, Node*& evens)
   splitHelper(in, odds, evens);
 
   // Delete original list
-  while(in){
-    Node* clean = in;
-    in = in -> next;
-    delete clean;
-  }
+  deleteLists(in);
 
 }
 
@@ -59,19 +58,31 @@ void splitHelper(Node *in, Node*& odds, Node*& evens){
 void insert(Node *&head, int value){
   Node* newNode = new Node(value, nullptr);
 
-    // If list doesn't exist make newNode the head
-    if(!head){
-      head = newNode;
-      return;
-    }
+  // If list doesn't exist make newNode the head
+  if(!head){
+    head = newNode;
+    return;
+  }
 
-    // If there is no next node then add the next node
-    if(!head->next){
-      head->next = newNode;
-      return;
-    }
+  // If there is no next node then add the next node
+  if(!head->next){
+    head->next = newNode;
+    return;
+  }
 
-    // Call until end of list
-    insert(head->next, value);
+  deleteLists(newNode);
+
+  // Recursive call to end of list
+  insert(head->next, value);
 
 }
+
+void deleteLists(Node*& in) {
+    if (in) {
+        Node* clean = in;
+        in = in->next;
+        delete clean;
+        deleteLists(in); // Recursive call for the next node
+    }
+}
+
