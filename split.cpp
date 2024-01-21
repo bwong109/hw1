@@ -14,10 +14,58 @@ the function below should be the only one in this file.
 
 /* Add a prototype for a helper function here if you need */
 
+void insert(Node *&head, int value);
+void splitHelper(Node *input, Node*& odds, Node*& evens);
+
 void split(Node*& in, Node*& odds, Node*& evens)
 {
   /* Add code here */
-// WRITE YOUR CODE HERE
+  // Clear lists
+  odds = nullptr;
+  evens = nullptr;
+
+  splitHelper(in, odds, evens);
+
+  // Delete original list
+  while(in){
+    Node* clean = in;
+    in = in -> next;
+    delete clean;
+  }
+
 }
 
 /* If you needed a helper function, write it here */
+void splitHelper(Node *in, Node*& odds, Node*& evens){
+  if (!in){
+    return;
+  }
+
+  if (in->value % 2 == 0){
+    insert(evens, in->value);
+  }
+  else{
+    insert(odds, in->value);
+  }
+
+  splitHelper(in->next, odds, evens);
+
+}
+
+void insert(Node *&head, int value){
+  Node* newNode = new Node(value, nullptr);
+
+    // If list doesn't exist
+    if(!head){
+      head = newNode;
+      return;
+    }
+
+    if(!head->next){
+      head->next = newNode;
+      return;
+    }
+
+    insert(head->next, value);
+
+}
