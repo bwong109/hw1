@@ -20,7 +20,7 @@ void splitHelper(Node *in, Node*& odds, Node*& evens);
 void split(Node*& in, Node*& odds, Node*& evens)
 {
   
-  // Clear lists
+  // Initalize empty lists
   odds = nullptr;
   evens = nullptr;
 
