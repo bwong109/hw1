@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     deleteList(evens3);
 
     // Test Case 4: List with both even and odd
-    Node* bothList = new Node(1, new Node(3, new Node(5, nullptr)));
+    Node* bothList = new Node(1, new Node(2, new Node(3, new Node(4, new Node(5, nullptr)))));
     Node* evens4 = nullptr;
     Node* odds4 = nullptr;
     split(bothList, odds4, evens4);
