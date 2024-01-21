@@ -15,11 +15,11 @@ the function below should be the only one in this file.
 /* Add a prototype for a helper function here if you need */
 
 void insert(Node *&head, int value);
-void splitHelper(Node *input, Node*& odds, Node*& evens);
+void splitHelper(Node *in, Node*& odds, Node*& evens);
 
 void split(Node*& in, Node*& odds, Node*& evens)
 {
-  /* Add code here */
+  
   // Clear lists
   odds = nullptr;
   evens = nullptr;
@@ -37,10 +37,13 @@ void split(Node*& in, Node*& odds, Node*& evens)
 
 /* If you needed a helper function, write it here */
 void splitHelper(Node *in, Node*& odds, Node*& evens){
+  
+  // If no input
   if (!in){
     return;
   }
 
+  // Insert whether odd or even
   if (in->value % 2 == 0){
     insert(evens, in->value);
   }
@@ -48,6 +51,7 @@ void splitHelper(Node *in, Node*& odds, Node*& evens){
     insert(odds, in->value);
   }
 
+  // Call splitHelper for the next item in list
   splitHelper(in->next, odds, evens);
 
 }
@@ -55,17 +59,19 @@ void splitHelper(Node *in, Node*& odds, Node*& evens){
 void insert(Node *&head, int value){
   Node* newNode = new Node(value, nullptr);
 
-    // If list doesn't exist
+    // If list doesn't exist make newNode the head
     if(!head){
       head = newNode;
       return;
     }
 
+    // If there is no next node then add the next node
     if(!head->next){
       head->next = newNode;
       return;
     }
 
+    // Call until end of list
     insert(head->next, value);
 
 }
