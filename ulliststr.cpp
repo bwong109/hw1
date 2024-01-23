@@ -27,7 +27,7 @@ size_t ULListStr::size() const
 void ULListStr::push_back(const std::string& val){
 
   // If there is no tail, or end of array is reached
-  if (tail_ == NULL || tail_->last == ARRSIZE){
+  if (!tail_ || tail_->last == ARRSIZE){
 
     // Create new item to add
     Item* newItem = new Item();
@@ -35,17 +35,17 @@ void ULListStr::push_back(const std::string& val){
     newItem -> next = NULL;
 
     // Add new node if no existing nodes
-    if (head_ == NULL){
+    if (!head_){
       head_ = newItem;
-    }
+    } 
     else{
       tail_ -> next = newItem;
     }
     
-    // Set tail to the new item
+    // Set value to first in new item
     tail_ = newItem;
   }
-
+  
   // Set new value to last index and increment size and last
   tail_->val[tail_->last] = val;
   tail_->last++;
@@ -76,33 +76,39 @@ void ULListStr::pop_back(){
 
 }
   
-void ULListStr::push_front(const std::string& val){
+void ULListStr::push_front(const std::string& val) {
 
-  // If there is no head, or first node is at very beginning
-  if (head_ == NULL || head_->first == 0){
-
+  // If there are no nodes or no space at the beginning
+  if (!head_ || head_->first == 0) {
+    
     // Create new item to add
     Item* newItem = new Item();
     newItem->next = head_;
-    newItem->prev = NULL;
+    newItem->prev = nullptr;
 
-    // Add new node if no existing nodes
-    if (tail_ == NULL){
+    // Update the previous pointer of the existing head
+    if (head_) {
+      head_->prev = newItem;
+    // If there are no nodes, set the tail to the new item
+    } else {
       tail_ = newItem;
     }
-    else{
-      head_->prev = newItem;
-    }
 
-    // Set head to the new item
+    // Initialize members to the end of array and add it
+    newItem->first = ARRSIZE-1;
+    newItem->val[newItem->first] = val;
     head_ = newItem;
+    size_++;
+  
   }
-
-  // Decrement first and add value (will be -1 when first = 0 to last index)
-  head_->first--;
-  head_->val[head_->first] = val;
-  size_++;
+  // Otherwise, decrement first and add value
+  else {
+    head_->first--;
+    head_->val[head_->first] = val;
+    size_++;
+  }
 }
+
 
 void ULListStr::pop_front(){
 
@@ -128,21 +134,12 @@ void ULListStr::pop_front(){
 
   
 std::string const & ULListStr::back() const{
-  
-  // Error if empty
-  if (empty()){
-    throw std::out_of_range("Empty list");
-  }
 
   // Last is index one after final value
   return tail_->val[tail_->last-1];
 }
 
 std::string const & ULListStr::front() const{
-  // Error if empty
-  if (empty()){
-    throw std::out_of_range("Empty list");
-  }
 
   return head_->val[head_->first];
 }
@@ -190,19 +187,38 @@ void ULListStr::clear()
 *  if loc is valid and NULL otherwise
 *   - MUST RUN in O(n) 
 */
-std::string* ULListStr::getValAtLoc(size_t loc) const{
+std::string* ULListStr::getValAtLoc(size_t loc) const {
+  // Check if the provided location is valid
   if (loc >= size_) {
-    return NULL;
+      // Return NULL (consider using nullptr in modern C++)
+      return nullptr;
   }
 
-  Item* curr = head_;
-  size_t remaining = loc;
+  // Traverse the list to find the node containing the desired location
+  Item* current = head_;
+  size_t index = 0;
 
-  while (remaining >= ARRSIZE || curr == NULL) {
-    remaining -= curr->last - curr->first;
-    curr = curr->next;
+  // Traverse the list nodes
+  while (current != nullptr) {
+      // Calculate the size of the current node
+      size_t nodeSize = current->last - current->first;
+
+      // Check if the desired location is within the current node
+      if (index + nodeSize > loc) {
+          // Calculate the local index within the node
+          size_t localIndex = loc - index;
+
+          // Return the pointer to the value at the calculated local index within the node
+          return &(current->val[current->first + localIndex]);
+      } else {
+          // Adjust the cumulative index to reflect the position in the next node
+          index += nodeSize;
+
+          // Move to the next node
+          current = current->next;
+      }
   }
 
-  return &(curr->val[curr->first + remaining]);
-
+  // This should not be reached; return NULL if something unexpected happens
+  return nullptr;
 }
