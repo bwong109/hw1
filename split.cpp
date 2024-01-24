@@ -78,11 +78,10 @@ void insert(Node *&head, int value){
 }
 
 void deleteLists(Node*& in) {
-    if (in) {
-        Node* clean = in;
-        in = in->next;
-        delete clean;
-        deleteLists(in); // Recursive call for the next node
-    }
+  if (in) {
+    Node* clean = in;
+    in = in->next;
+    delete clean;
+    deleteLists(in); // Recursive call for the next node
+  }
 }
-

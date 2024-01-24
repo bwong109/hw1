@@ -13,23 +13,26 @@ g++ split.cpp test_split.cpp -o test_split
 #include "split.h"
 
 // Function to print out list
-void printList(Node* list)
-{
-    while (list)
-    {
-        std::cout << list->value << " ";
-        list = list->next;
+void printList(Node* list) {
+    // Base case: check if the current node is NULL
+    if (!list) {
+        return;
     }
+
+    // Print the current node's value
+    std::cout << list->value << " ";
+
+    // Recursively call the function with the next node
+    printList(list->next);
 }
 
 // Function to delete a linked list
-void deleteList(Node*& list)
-{
-    while (list)
-    {
-        Node* temp = list;
-        list = list->next;
-        delete temp;
+void deleteList(Node*& in) {
+    if (in) {
+        Node* clean = in;
+        in = in->next;
+        delete clean;
+        deleteList(in); // Recursive call for the next node
     }
 }
 
