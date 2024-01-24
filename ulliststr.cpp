@@ -84,7 +84,7 @@ void ULListStr::push_front(const std::string& val) {
     // Create new item to add
     Item* newItem = new Item();
     newItem->next = head_;
-    newItem->prev = nullptr;
+    newItem->prev = NULL;
 
     // Update the previous pointer of the existing head
     if (head_) {
@@ -96,6 +96,7 @@ void ULListStr::push_front(const std::string& val) {
 
     // Initialize members to the end of array and add it
     newItem->first = ARRSIZE-1;
+    newItem->last = ARRSIZE;
     newItem->val[newItem->first] = val;
     head_ = newItem;
     size_++;
@@ -118,12 +119,12 @@ void ULListStr::pop_front(){
   }
 
   // Increment first and decrement size as long as it is in the scope of the array
-  if (head_->first < ARRSIZE - 1) {
-    head_->first++;
+  if (head_->first < ARRSIZE) {
     size_--;
+    head_->first++;
 
     // Remove first node if it is empty and is not the only node
-    if (head_->first == ARRSIZE - 1 && head_->next != NULL) {
+    if (head_->first == ARRSIZE && head_->next != NULL) {
       Item* temp = head_;
       head_ = head_->next;
       head_->prev = NULL;
@@ -182,43 +183,37 @@ void ULListStr::clear()
   size_ = 0;
 }
 
-/** 
-* Returns a pointer to the item at index, loc,
-*  if loc is valid and NULL otherwise
-*   - MUST RUN in O(n) 
-*/
 std::string* ULListStr::getValAtLoc(size_t loc) const {
-  // Check if the provided location is valid
+
+  // Check if location valid
   if (loc >= size_) {
-      // Return NULL (consider using nullptr in modern C++)
-      return nullptr;
+      return NULL;
   }
 
-  // Traverse the list to find the node containing the desired location
-  Item* current = head_;
+  // Find node containing the desired location
+  Item* curr = head_;
   size_t index = 0;
 
-  // Traverse the list nodes
-  while (current != nullptr) {
-      // Calculate the size of the current node
-      size_t nodeSize = current->last - current->first;
+  // Look through list nodes
+  while (curr != NULL) {
 
-      // Check if the desired location is within the current node
+      // Calculate the size of current node
+      size_t nodeSize = curr->last - curr->first;
+
+      // Check if location is within the current node
       if (index + nodeSize > loc) {
+
           // Calculate the local index within the node
           size_t localIndex = loc - index;
 
-          // Return the pointer to the value at the calculated local index within the node
-          return &(current->val[current->first + localIndex]);
+          // Return the pointer to the value of calculated local index
+          return &(curr-> val[curr->first + localIndex]);
+        
+      // Adjust index to reflect the position in the next node
       } else {
-          // Adjust the cumulative index to reflect the position in the next node
           index += nodeSize;
-
-          // Move to the next node
-          current = current->next;
+          curr = curr->next;
       }
   }
-
-  // This should not be reached; return NULL if something unexpected happens
-  return nullptr;
+  return NULL;
 }
